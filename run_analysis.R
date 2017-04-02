@@ -8,15 +8,18 @@ merge_data <- function(directory)
   merge_dataset <- data.frame()
   features <- read.table(paste(directory,"features.txt",sep = ""))
   activity_labels <- read.table(paste(directory,"activity_labels.txt",sep = ""))
+  names(activity_labels)[1] <- "Activity_Id"
+  names(activity_labels)[2] <- "Activities"
+  
   for (i in test_or_train)
   { 
     #Read Test and Train data set
     subject <- read.table(paste(directory,i, "/subject_", i, ".txt",sep = ""))
     x <- read.table(paste(directory,i, "/X_", i, ".txt" ,sep = ""))
-    y <- read.table(paste(directory,i, "/y_",i, ".txt",sep = ""))
+    y <- read.table(paste(directory,i, "/y_",i, ".txt",sep = ""),col.names = "Activity_Id")
     
     #Fetches descriptive activity name
-    y1 <- merge(y,activity_labels , by.x = names(y), by.y = names(activity_labels)[1], all = FALSE, sort = FALSE)
+    y1 <- inner_join(y,activity_labels, by= "Activity_Id")
     
     #Labels the dataset with descriptive variable name
     for (i in 1:561)
